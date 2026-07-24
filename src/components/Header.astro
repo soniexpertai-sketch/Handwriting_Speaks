@@ -1,0 +1,232 @@
+---
+// Sticky site header with brand lockup + nav.
+// Mobile: hamburger toggles a full-width dropdown (progressive enhancement —
+// links still work if JS is disabled, they just show stacked).
+import { NAV_LINKS } from '../consts';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container container--wide header-inner">
+    <a href="/" class="brand" aria-label="Handwriting Speaks — home">
+      <img
+        class="brand-badge"
+        src="/images/logo.jpg"
+        alt=""
+        width="44"
+        height="44"
+        loading="eager"
+      />
+      <span class="brand-word">Healing Through Writing</span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      aria-label="Open menu"
+    >
+      <span class="nav-toggle-bar" aria-hidden="true"></span>
+      <span class="nav-toggle-bar" aria-hidden="true"></span>
+      <span class="nav-toggle-bar" aria-hidden="true"></span>
+    </button>
+
+    <nav id="primary-nav" class="primary-nav" aria-label="Primary">
+      <ul>
+        {
+          NAV_LINKS.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class:list={['nav-link', { 'is-active': isActive(link.href) }]}
+                aria-current={isActive(link.href) ? 'page' : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/contact" class="btn btn--coral nav-cta">Book Consultation</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--nav-fill);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 16px;
+  }
+
+  /* Brand lockup */
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  /* logo.jpg (960x960, replaced the earlier logo.svg 2026-07-23 — same
+     design, raster now) is a square canvas filled edge-to-edge with the
+     brand green, with its own circular white disc drawn inside — clipping
+     the whole image to a circle turns that filled square into the circular
+     badge already used site-wide, no separate background/disc needed here. */
+  .brand-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+  }
+  .brand-word {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--green);
+  }
+
+  /* Nav */
+  .primary-nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-link {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    padding: 6px 2px;
+  }
+  .nav-link:hover,
+  .nav-link.is-active {
+    color: var(--coral);
+  }
+  .nav-link.is-active {
+    box-shadow: inset 0 -2px 0 0 var(--coral);
+  }
+  .nav-cta {
+    color: var(--white);
+  }
+  .nav-cta:hover {
+    color: var(--white);
+  }
+
+  /* Hamburger — hidden on desktop */
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .nav-toggle-bar {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--ink-strong);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* --- Mobile --------------------------------------------------------- */
+  @media (max-width: 860px) {
+    .nav-toggle {
+      display: flex;
+    }
+    .primary-nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--hairline);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+    .primary-nav.is-open {
+      max-height: 80vh;
+    }
+    .primary-nav ul {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 8px var(--gutter-mobile) 20px;
+    }
+    .primary-nav li {
+      width: 100%;
+    }
+    .nav-link {
+      display: block;
+      padding: 14px 4px;
+      border-bottom: 1px solid var(--hairline);
+      font-size: 17px;
+    }
+    .nav-link.is-active {
+      box-shadow: none;
+    }
+    .nav-cta {
+      margin-top: 16px;
+      width: 100%;
+    }
+    .brand-word {
+      font-size: 22px;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const nav = document.getElementById('primary-nav');
+
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      toggle.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+      nav.classList.toggle('is-open', !open);
+    });
+
+    // Close when a link is tapped.
+    nav.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+        nav.classList.remove('is-open');
+      })
+    );
+  }
+</script>

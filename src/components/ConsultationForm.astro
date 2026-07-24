@@ -1,0 +1,201 @@
+---
+// Small "Book a Consultation" form. The site is 100% static — there is no
+// backend to submit to, and there never will be (see CLAUDE.md). So this
+// form does NOT submit anywhere itself: on submit, JS builds a WhatsApp
+// message from what the visitor typed and opens wa.me with it pre-filled,
+// exactly like every other CTA on this site. The visitor still has to press
+// send inside WhatsApp themselves — that's an inherent limit of a static
+// site with no server, not a bug, and the helper text below says so plainly.
+import WhatsAppIcon from './WhatsAppIcon.astro';
+
+interface Props {
+  services: readonly { title: string }[];
+}
+const { services } = Astro.props;
+---
+
+<form class="consult-form" id="consult-form" novalidate>
+  <div class="consult-row">
+    <label for="consult-name">Name</label>
+    <input
+      id="consult-name"
+      name="name"
+      type="text"
+      autocomplete="name"
+      placeholder="Your name"
+      required
+    />
+  </div>
+
+  <div class="consult-row">
+    <label for="consult-phone">Phone / WhatsApp number</label>
+    <input
+      id="consult-phone"
+      name="phone"
+      type="tel"
+      autocomplete="tel"
+      placeholder="e.g. 98765 43210"
+      required
+    />
+  </div>
+
+  <div class="consult-row">
+    <label for="consult-service">Service you're interested in</label>
+    <select id="consult-service" name="service" required>
+      <option value="" selected disabled>Choose a service</option>
+      {services.map((s) => <option value={s.title}>{s.title}</option>)}
+      <option value="Not sure yet">Not sure yet — just enquiring</option>
+    </select>
+  </div>
+
+  <div class="consult-row">
+    <label for="consult-message">
+      Anything else you'd like to share <span class="optional">(optional)</span>
+    </label>
+    <textarea
+      id="consult-message"
+      name="message"
+      rows="3"
+      placeholder="e.g. best time to reach you, or a bit about what's on your mind"
+    ></textarea>
+  </div>
+
+  <button type="submit" class="btn consult-submit">
+    <WhatsAppIcon size={20} />
+    <span>Book a Consultation</span>
+  </button>
+
+  <p class="consult-note">
+    This opens WhatsApp with your details filled in — just review and hit
+    send. We never see anything you type here until you do.
+  </p>
+</form>
+
+<style>
+  .consult-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    background: var(--white);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-card);
+  }
+  .consult-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .consult-row label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .optional {
+    font-weight: 400;
+    color: var(--text-meta);
+  }
+  .consult-row input,
+  .consult-row select,
+  .consult-row textarea {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 2px solid var(--hairline);
+    border-radius: var(--r-chip);
+    padding: 12px 14px;
+    transition: border-color 0.2s ease;
+  }
+  .consult-row input:focus-visible,
+  .consult-row select:focus-visible,
+  .consult-row textarea:focus-visible {
+    border-color: var(--green-mid);
+  }
+  .consult-row textarea {
+    resize: vertical;
+    min-height: 72px;
+  }
+
+  .consult-submit {
+    justify-content: center;
+    gap: 10px;
+    background: #25d366;
+    color: var(--white);
+    margin-top: 6px;
+  }
+  .consult-submit:hover {
+    background: #1fbd5a;
+  }
+
+  .consult-note {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-meta);
+    text-align: center;
+  }
+
+  /* Surfaced only when JS validation blocks submission (see script below). */
+  .consult-row.has-error input,
+  .consult-row.has-error select {
+    border-color: var(--coral);
+  }
+</style>
+
+<script>
+  import { CONTACT } from '../consts';
+
+  const form = document.getElementById('consult-form') as HTMLFormElement | null;
+  if (form) {
+    // Pre-select the service a visitor arrived with, e.g. from a Services
+    // page card linking to /contact?service=Logo%20Analyst#consult-form.
+    // Falls back silently (leaves the placeholder) if there's no match —
+    // a stale/unknown value should never leave the field looking broken.
+    const params = new URLSearchParams(window.location.search);
+    const requestedService = params.get('service');
+    if (requestedService) {
+      const select = form.querySelector<HTMLSelectElement>('#consult-service');
+      const match = select
+        ? [...select.options].find((opt) => opt.value === requestedService)
+        : null;
+      if (select && match) select.value = requestedService;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = new FormData(form);
+      const name = String(data.get('name') ?? '').trim();
+      const phone = String(data.get('phone') ?? '').trim();
+      const service = String(data.get('service') ?? '').trim();
+      const message = String(data.get('message') ?? '').trim();
+
+      // Minimal required-field check — mirrors the `required` attributes,
+      // since novalidate is set so we can control the error styling.
+      let firstInvalid: HTMLElement | null = null;
+      form.querySelectorAll<HTMLElement>('.consult-row').forEach((row) => {
+        const field = row.querySelector<HTMLInputElement | HTMLSelectElement>(
+          'input, select'
+        );
+        const invalid = !!field && 'value' in field && field.hasAttribute('required') && !field.value;
+        row.classList.toggle('has-error', invalid);
+        if (invalid && !firstInvalid) firstInvalid = field;
+      });
+      if (firstInvalid) {
+        (firstInvalid as HTMLElement).focus();
+        return;
+      }
+
+      const lines = [
+        `Hi! I'd like to book a consultation.`,
+        `Name: ${name}`,
+        `Phone: ${phone}`,
+        `Service: ${service}`,
+      ];
+      if (message) lines.push(`Message: ${message}`);
+
+      const text = encodeURIComponent(lines.join('\n'));
+      window.open(`https://wa.me/${CONTACT.phoneRaw}?text=${text}`, '_blank', 'noopener');
+    });
+  }
+</script>

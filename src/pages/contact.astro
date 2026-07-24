@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ConsultationForm from '../components/ConsultationForm.astro';
+import ContactIconLink from '../components/ContactIconLink.astro';
+import { CONTACT, SERVICES, gmailComposeUrl } from '../consts';
+---
+
+<BaseLayout
+  title="Contact"
+  path="/contact"
+  description="Book a handwriting or signature analysis with Jyoti Maheswari — online and in-person consultations in Baner, Pune. Connect on WhatsApp."
+>
+  <section class="contact" aria-labelledby="contact-heading">
+    <div class="container contact-shell">
+      <!-- Left: pitch, WhatsApp CTA, business hours, location + social. -->
+      <div class="contact-pitch">
+        <p class="eyebrow-script">Get in touch</p>
+        <h1 id="contact-heading">Connect for Offline &amp; Online Consultations</h1>
+
+        <div class="info-card">
+          <h2 class="info-title">Location</h2>
+          <address class="location">
+            {CONTACT.address}
+          </address>
+          <p class="location-note">
+            Available for both <strong>online</strong> and
+            <strong>in-person</strong> consultations.
+          </p>
+          <div class="icon-links">
+            <ContactIconLink
+              icon="phone"
+              href={`tel:+${CONTACT.phoneRaw}`}
+              label={CONTACT.phoneDisplay}
+            />
+            <ContactIconLink
+              icon="email"
+              href={gmailComposeUrl()}
+              label={CONTACT.email}
+              external
+            />
+            <ContactIconLink
+              icon="instagram"
+              href={CONTACT.instagramUrl}
+              label={`Instagram: ${CONTACT.instagramHandle}`}
+              external
+            />
+            {
+              CONTACT.facebookUrl && (
+                <ContactIconLink
+                  icon="facebook"
+                  href={CONTACT.facebookUrl}
+                  label="Facebook"
+                  external
+                />
+              )
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: the consultation form. -->
+      <div class="contact-form-col">
+        <h2 class="contact-form-heading">Book a Consultation</h2>
+        <ConsultationForm services={SERVICES} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    padding-block: var(--section-y);
+  }
+
+  .contact-shell {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  /* --- Left column: pitch + info -------------------------------------- */
+  .eyebrow-script {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--coral);
+    margin-bottom: 4px;
+  }
+  .contact-pitch h1 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 44px);
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 16px;
+  }
+
+  .info-card {
+    background: var(--section-green);
+    border-radius: var(--r-lg);
+    padding: 32px 30px;
+    margin-top: 24px;
+  }
+  .info-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink-strong);
+    margin-bottom: 18px;
+  }
+
+  .location {
+    font-style: normal;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .location-note {
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+  .icon-links {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* --- Right column: form ---------------------------------------------- */
+  .contact-form-heading {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink-strong);
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 860px) {
+    .contact-shell {
+      grid-template-columns: 1fr;
+      gap: 44px;
+    }
+  }
+</style>

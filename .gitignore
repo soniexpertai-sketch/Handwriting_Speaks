@@ -1,0 +1,17 @@
+# Dependencies — regenerated via `npm install` from package-lock.json
+node_modules/
+
+# Build output — regenerated via `npm run build`
+dist/
+
+# Astro's internal cache/type-generation
+.astro/
+
+# Environment variables / secrets — never commit these
+.env
+.env.*
+!.env.example
+
+# Editor/OS cruft
+.DS_Store
+Thumbs.db

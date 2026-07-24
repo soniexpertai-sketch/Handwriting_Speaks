@@ -1,0 +1,151 @@
+---
+import { SITE, CONTACT, NAV_LINKS } from '../consts';
+import WhatsAppCTA from './WhatsAppCTA.astro';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-cta">
+    <p class="footer-cta-text">
+      Ready to discover what your handwriting reveals? Message us on WhatsApp.
+    </p>
+    <WhatsAppCTA label="Chat on WhatsApp" variant="whatsapp" large />
+  </div>
+
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <span class="footer-word">Healing Through Writing</span>
+      <p class="footer-tag">
+        {SITE.name} — handwriting &amp; signature analysis by {CONTACT.analyst},
+        Pune. Find the real “YOU”.
+      </p>
+    </div>
+
+    <nav class="footer-nav" aria-label="Footer">
+      <h2 class="footer-h">Explore</h2>
+      <ul>
+        {NAV_LINKS.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="footer-contact">
+      <h2 class="footer-h">Contact</h2>
+      <ul>
+        <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+        <li><a href={`tel:+${CONTACT.phoneRaw}`}>{CONTACT.phoneDisplay}</a></li>
+        <li>
+          <a href={CONTACT.instagramUrl} target="_blank" rel="noopener">
+            Instagram: {CONTACT.instagramHandle}
+          </a>
+        </li>
+        <li class="footer-addr">{CONTACT.address}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-legal">
+    <p>© {year} {SITE.name} · {CONTACT.analyst} · Find the real “YOU”.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--panel-dark);
+    color: var(--text-footer);
+    margin-top: auto;
+  }
+
+  /* WhatsApp CTA band */
+  .footer-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-block: 48px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .footer-cta-text {
+    color: var(--white);
+    font-size: 22px;
+    font-weight: 700;
+    max-width: 560px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1.4fr;
+    gap: 40px;
+    padding-block: 56px;
+  }
+  .footer-word {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--white);
+    line-height: 1;
+  }
+  .footer-tag {
+    margin-top: 14px;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 40ch;
+  }
+  .footer-h {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .footer-nav ul,
+  .footer-contact ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  /* :not(.btn) — otherwise this generic link rule (specificity 0,2,0) beats
+     .btn--amber's own color (0,1,0) regardless of source order, silently
+     overriding the WhatsApp button's intended dark-brown text with this
+     muted footer teal. Confirmed bug: rendered as low-contrast teal-on-amber. */
+  .site-footer a:not(.btn) {
+    color: var(--text-footer);
+    font-size: 15px;
+  }
+  .site-footer a:not(.btn):hover {
+    color: var(--white);
+  }
+  .footer-addr {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .footer-legal {
+    padding-block: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+    font-size: 14px;
+  }
+
+  @media (max-width: 860px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 560px) {
+    .footer-cta-text {
+      font-size: 19px;
+    }
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

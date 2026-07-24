@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CONTACT } from '../consts';
+---
+
+<BaseLayout title="Home" path="/">
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="container container--wide hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Graphology &amp; Signature Analysis</p>
+        <h1 id="hero-heading" class="hero-title">
+          Find the real <span class="hl">“YOU”</span> in every stroke.
+        </h1>
+        <p class="hero-lead">
+          {CONTACT.analyst} helps teenagers, students, professionals, business
+          owners and home-makers understand their personality, behaviour and
+          confidence through handwriting and signature analysis — and offers
+          guided correction to build the traits you want.
+        </p>
+        <div class="hero-actions">
+          <a href="/contact" class="btn btn--primary">Book a Consultation</a>
+          <a
+            href={CONTACT.instagramUrl}
+            target="_blank"
+            rel="noopener"
+            class="btn btn--outline"
+          >
+            Follow {CONTACT.instagramHandle}
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <img
+          class="badge-outer"
+          src="/images/logo.jpg"
+          alt=""
+          width="340"
+          height="340"
+          loading="eager"
+        />
+        <span class="deco deco-square"></span>
+        <span class="deco deco-dot"></span>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: 90px 100px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  /* Copy column */
+  .eyebrow {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: var(--r-pill);
+    background: var(--section-green-alt);
+    color: var(--green);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(52px, 8vw, 76px);
+    line-height: 1.02;
+    color: var(--ink-strong);
+    margin-bottom: 22px;
+  }
+  .hero-title .hl {
+    color: var(--coral);
+  }
+  .hero-lead {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin-bottom: 34px;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  /* Visual column — round brand badge + floating accents */
+  .hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  /* logo.jpg (960x960, replaced the earlier logo.svg 2026-07-23 — same
+     design, raster now) is a square canvas filled edge-to-edge with the
+     brand green and its own circular white disc + wordmark + tagline drawn
+     inside — clipping the whole image to a circle here reproduces the same
+     badge look that used to be hand-built from nested divs, using the real
+     logo asset. */
+  .badge-outer {
+    display: block;
+    width: 340px;
+    /* height: auto (not a fixed 340px) — with a fixed height, max-width:80vw
+       could shrink the rendered width on narrow screens while height stayed
+       locked at 340px, distorting the circle into an oval (confirmed:
+       300x340 at a 375px viewport). aspect-ratio:1 + height:auto lets height
+       always follow whatever width actually renders. */
+    height: auto;
+    max-width: 80vw;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: var(--shadow-hero);
+  }
+  .deco {
+    position: absolute;
+  }
+  .deco-square {
+    top: -10px;
+    right: 20px;
+    width: 20px;
+    height: 20px;
+    background: var(--orange-square);
+    transform: rotate(45deg);
+    border-radius: var(--r-tiny);
+  }
+  .deco-dot {
+    bottom: 10px;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    background: var(--coral);
+    border-radius: 50%;
+  }
+
+  /* --- Responsive ----------------------------------------------------- */
+  @media (max-width: 860px) {
+    .hero {
+      padding-block: 56px 72px;
+    }
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .hero-visual {
+      order: -1;
+    }
+    .hero-lead {
+      max-width: none;
+    }
+  }
+  @media (max-width: 400px) {
+    .hero-actions .btn {
+      width: 100%;
+    }
+  }
+</style>

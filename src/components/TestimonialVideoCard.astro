@@ -1,0 +1,104 @@
+---
+// One real client video testimonial. Uses the browser's native <video controls>
+// (no custom play button intercepting clicks) so it's keyboard- and
+// screen-reader-accessible out of the box.
+//
+// preload="metadata" (not "none") — loads just the file header + first frame,
+// giving a real thumbnail at minimal bandwidth cost. With preload="none" and
+// no poster, browsers paint a plain black box until played, which reads as
+// broken/missing media rather than a video — confirmed bug. The decorative
+// play-button overlay below is a second safety net for browsers that don't
+// reliably decode a frame from metadata-only preload; it's pointer-events:
+// none so it never blocks the native controls, and JS hides it once playback
+// actually starts.
+import type { TestimonialVideo } from '../data/testimonials';
+
+interface Props extends TestimonialVideo {
+  hidden?: boolean;
+}
+const { service, src, caption, hidden = false } = Astro.props;
+---
+
+<figure class="vcard" data-service={service} hidden={hidden}>
+  <div class="vcard-frame">
+    <video class="vcard-video" controls preload="metadata" playsinline>
+      <source src={src} type="video/mp4" />
+      Your browser doesn't support embedded video. <a href={src}>Download the video</a> instead.
+    </video>
+    <span class="vcard-play" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" focusable="false">
+        <path d="M8 5v14l11-7z" fill="var(--green)" />
+      </svg>
+    </span>
+  </div>
+  <figcaption class="vcard-caption">{caption}</figcaption>
+</figure>
+
+<style>
+  .vcard {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 240px;
+  }
+  .vcard[hidden] {
+    display: none;
+  }
+  .vcard-frame {
+    position: relative;
+  }
+  .vcard-video {
+    /* Width-capped (not height-capped) so aspect-ratio always governs the box
+       correctly — capping height instead let a wide grid track squash this
+       into a landscape shape, and object-fit: cover then cropped out heads
+       and on-screen captions. Source clips are genuinely ~9:16, so this
+       renders them full-frame, top to bottom. */
+    display: block;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--r-md);
+    background: var(--ink-strong);
+    object-fit: contain;
+  }
+  .vcard-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .vcard-play::before {
+    content: '';
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--white);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  }
+  .vcard-play svg {
+    position: relative;
+    margin-left: 3px; /* optically centers the triangle glyph */
+  }
+  .vcard-frame.is-playing .vcard-play {
+    display: none;
+  }
+  .vcard-caption {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-meta);
+    text-align: center;
+  }
+</style>
+
+<script>
+  // Hide the decorative play-button overlay once a clip actually starts
+  // playing, so it doesn't sit on top of the video during playback.
+  document.querySelectorAll<HTMLVideoElement>('.vcard-video').forEach((video) => {
+    const frame = video.closest('.vcard-frame');
+    video.addEventListener('play', () => frame?.classList.add('is-playing'));
+  });
+</script>

@@ -1,0 +1,103 @@
+---
+// Reusable inline WhatsApp button. One place that guarantees every link:
+//   • uses the encoded wa.me deep link (mobile app + desktop web)
+//   • opens in a new tab with rel="noopener"
+//   • carries the official WhatsApp icon
+import { whatsappLink, WHATSAPP_MESSAGE } from '../consts';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+
+interface Props {
+  /** Prefilled chat text (plain, un-encoded). Defaults to the site opener. */
+  message?: string;
+  /** Visible button label. */
+  label?: string;
+  /** Visual style. `whatsapp` = brand green; others map to DESIGN_TOKENS btns. */
+  variant?: 'whatsapp' | 'primary' | 'amber' | 'outline';
+  /** Larger padding/size for hero/section CTAs. */
+  large?: boolean;
+  /** Full-width (useful in cards and on mobile). */
+  block?: boolean;
+  /** Accessible label override (defaults to the visible label). */
+  ariaLabel?: string;
+}
+
+const {
+  message = WHATSAPP_MESSAGE,
+  label = 'Chat on WhatsApp',
+  variant = 'whatsapp',
+  large = false,
+  block = false,
+  ariaLabel,
+} = Astro.props;
+---
+
+<a
+  class:list={[
+    'btn',
+    'wa-cta',
+    `wa-cta--${variant}`,
+    { 'wa-cta--lg': large, 'wa-cta--block': block },
+  ]}
+  href={whatsappLink(message)}
+  target="_blank"
+  rel="noopener"
+  aria-label={ariaLabel ?? label}
+>
+  <WhatsAppIcon size={large ? 26 : 22} class="wa-cta-icon" />
+  <span>{label}</span>
+</a>
+
+<style>
+  .wa-cta {
+    gap: 10px;
+  }
+  .wa-cta-icon {
+    flex-shrink: 0;
+  }
+
+  /* WhatsApp brand green — the default look. */
+  .wa-cta--whatsapp {
+    background: #25d366;
+    color: var(--white);
+    border-color: transparent;
+  }
+  .wa-cta--whatsapp:hover {
+    background: #1fbd5a;
+    color: var(--white);
+  }
+
+  /* DESIGN_TOKENS button variants (icon added). */
+  .wa-cta--primary {
+    background: var(--green);
+    color: var(--white);
+  }
+  .wa-cta--primary:hover {
+    background: #1a5f4f;
+    color: var(--white);
+  }
+  .wa-cta--amber {
+    background: var(--amber);
+    color: var(--text-on-amber);
+  }
+  .wa-cta--amber:hover {
+    background: #f0a038;
+    color: var(--text-on-amber);
+  }
+  .wa-cta--outline {
+    background: transparent;
+    color: var(--green);
+    border-color: var(--green);
+  }
+  .wa-cta--outline:hover {
+    background: var(--green);
+    color: var(--white);
+  }
+
+  .wa-cta--lg {
+    padding: 18px 34px;
+    font-size: 18px;
+  }
+  .wa-cta--block {
+    width: 100%;
+  }
+</style>

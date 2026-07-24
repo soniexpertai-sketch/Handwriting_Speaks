@@ -1,0 +1,499 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WhatsAppCTA from '../components/WhatsAppCTA.astro';
+import { CONTACT, GOOGLE_RATING } from '../consts';
+---
+
+<BaseLayout
+  title="About"
+  path="/about"
+  description="Meet Jyoti Maheswari, Founder and Director of Handwriting Speaks — a 4.9-star rated handwriting & signature analyst and international graphology trainer in Pune."
+>
+  <section class="about" aria-labelledby="about-heading">
+    <div class="container about-grid">
+      <!-- Left column: main portrait, with the two award photos filling the
+           space left over below it once the right column grew much taller
+           (name, credential, rating, plus the full first-person narrative). -->
+      <div class="about-left">
+        <div class="about-photo">
+          <picture>
+            <source srcset="/images/jyoti-maheswari-headshot.svg" type="image/svg+xml" />
+            <img
+              src="/images/jyoti-maheswari-headshot.jpg"
+              alt="Jyoti Maheswari, Handwriting and Signature Analyst (Graphologist)"
+              width="800"
+              height="1000"
+              loading="lazy"
+            />
+          </picture>
+        </div>
+
+        <div class="awards-mini">
+          <p class="awards-mini-label">Awards &amp; recognition</p>
+          <div class="awards-mini-grid">
+            <figure class="award-mini">
+              <picture>
+                <source srcset="/images/jyoti-award-green-saree.svg" type="image/svg+xml" />
+                <img
+                  src="/images/jyoti-award-green-saree.jpg"
+                  alt="Jyoti Maheswari receiving an award trophy at a professional felicitation event"
+                  width="1200"
+                  height="1600"
+                  loading="lazy"
+                />
+              </picture>
+              <figcaption>Recognised for her contribution to handwriting analysis</figcaption>
+            </figure>
+
+            <figure class="award-mini">
+              <picture>
+                <source srcset="/images/jyoti-award-star-trophy.svg" type="image/svg+xml" />
+                <img
+                  src="/images/jyoti-award-star-trophy.jpg"
+                  alt="Jyoti Maheswari holding a star-shaped award trophy"
+                  width="960"
+                  height="1280"
+                  loading="lazy"
+                />
+              </picture>
+              <figcaption>Honoured for her work as a graphologist</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: everything about her, top to bottom in one place —
+           name, credential, real rating, then straight into her own words. -->
+      <div class="about-copy">
+        <div class="identity">
+          <p class="eyebrow-script">Meet your analyst</p>
+          <h1 id="about-heading">{CONTACT.analyst}</h1>
+          <p class="about-credential">{CONTACT.title}</p>
+
+          <div class="rating-badge" aria-label={`Rated ${GOOGLE_RATING.value} out of 5 from ${GOOGLE_RATING.reviewCount} Google reviews`}>
+            <span class="rating-stars" aria-hidden="true">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <svg
+                  class:list={['star', { 'star--on': i < Math.round(GOOGLE_RATING.value) }]}
+                  viewBox="0 0 20 20"
+                  width="16"
+                  height="16"
+                  focusable="false"
+                >
+                  <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.79L10 14.9l-5.2 2.73.99-5.79L1.58 7.62l5.82-.85L10 1.5z" />
+                </svg>
+              ))}
+            </span>
+            <span class="rating-text">
+              {GOOGLE_RATING.value} · {GOOGLE_RATING.reviewCount} Google reviews
+            </span>
+          </div>
+        </div>
+
+        <div class="meet-body">
+          <p>
+            Hello! I'm Jyoti Maheswari, a Certified Handwriting and Signature
+            Analyst with over 5 years of experience in helping people
+            understand themselves better and create positive changes in their
+            lives.
+          </p>
+          <p>
+            My journey in graphology has given me the opportunity to work with
+            students, professionals, homemakers, entrepreneurs, business
+            owners, and individuals from different walks of life. It is truly
+            fulfilling to see people gain confidence, improve relationships,
+            make better career decisions, and overcome personal challenges
+            through the insights hidden in their handwriting.
+          </p>
+          <p>
+            I believe that your handwriting is a reflection of your conscious
+            and subconscious mind. By scientifically analysing handwriting, I
+            identify an individual's personality traits, strengths, thinking
+            patterns, emotional responses, fears, defence mechanisms, and areas
+            that need improvement. This awareness becomes the first step
+            towards meaningful personal and professional growth.
+          </p>
+          <p>
+            Along with handwriting analysis, I specialise in scientific
+            Signature Analysis and Signature Correction. A signature is your
+            personal brand — it reflects how you present yourself to the
+            world. A well-designed signature can help project confidence,
+            professionalism, and a stronger personal identity.
+          </p>
+          <p>
+            I also guide individuals through Graphotherapy (Grapho Patterns) —
+            simple, practical handwriting exercises that support positive
+            behavioural change. With regular practice and the willingness to
+            improve, these exercises can help work on habits such as
+            procrastination, anger, mood swings, self-doubt, low confidence,
+            lack of focus, indecisiveness, and other limiting behavioural
+            patterns.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission / Vision -->
+  <section class="story" aria-labelledby="story-heading">
+    <div class="container">
+      <header class="story-head">
+        <h2 id="story-heading">
+          When emotions hide, <span class="hl">Handwriting Speaks.</span>
+        </h2>
+      </header>
+
+      <div class="story-grid">
+        <article class="story-card">
+          <h3>Mission</h3>
+          <p>
+            To help people understand themselves, unlock their hidden
+            potential, and become the best version of themselves. Every
+            stroke of your handwriting tells a story, and I am here to help
+            you discover what your handwriting says about you and how you can
+            use those insights to create a happier, more confident, and
+            successful life.
+          </p>
+          <p class="story-quote">
+            "Your handwriting reflects your personality. Transform your
+            writing, transform your life."
+          </p>
+        </article>
+
+        <article class="story-card">
+          <h3>Vision</h3>
+          <p class="story-vision-lead">
+            To help people find the real "YOU" — across every stage of life:
+          </p>
+          <ul class="story-vision-list">
+            <li>Personal Development</li>
+            <li>Relationship and Compatibility</li>
+            <li>Parenting and Child Behavior</li>
+            <li>Career and Professional Growth</li>
+            <li>Corporate and HR Assessments</li>
+            <li>Well being and Mindset Correction</li>
+            <li>Student Success and Performance</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="story-cta">
+        <p class="story-cta-text">Ready to know more about yourself?</p>
+        <WhatsAppCTA label="Chat on WhatsApp" variant="whatsapp" large />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-top: var(--section-y);
+    padding-bottom: 40px;
+  }
+  .about-grid {
+    display: grid;
+    /* Photo column scaled down a little (was an even 1fr 1fr) so the text
+       column — which now carries the full narrative — gets more width and
+       reads more comfortably rather than being squeezed into a half-width
+       column matched to a large portrait. */
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 60px;
+    /* start, not center — the copy column got much shorter once the old
+       bio/aphorism paragraphs were removed, and centering it against the
+       much taller photo column left a large empty gap above "Meet your
+       analyst" (confirmed: ~122px gap at 1000px viewport). Top-aligning
+       both columns is also the standard "photo + intro" bio layout. */
+    align-items: start;
+  }
+
+  /* Left column: portrait + the two award photos stacked below it. Sticky
+     (desktop only — overridden back to static in the ≤860px stacked layout
+     below) so it stays in view as the visitor scrolls the much longer text
+     column, instead of ending partway down with empty space beneath it and
+     the two columns looking unrelated/misaligned by the time the text ends.
+     top:100px clears the sticky site header so this never scrolls under it. */
+  .about-left {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: sticky;
+    top: 100px;
+  }
+
+  /* Photo. Wrapper radius/overflow guarantee a consistent corner regardless
+     of display size (the SVG's own clip-path radius scales with its
+     viewBox, so this keeps it visually correct at any width per
+     DESIGN_TOKENS --r-lg). */
+  .about-photo {
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .about-photo picture,
+  .about-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Matches the source's 800x1000 viewBox (4:5). Reserves the correct box
+       before the image loads instead of relying on implicit width/height
+       attribute sizing, which not every browser applies consistently. */
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  /* Award photos — smaller, secondary pair beneath the main portrait. */
+  .awards-mini-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-meta);
+    margin-bottom: 10px;
+  }
+  .awards-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .award-mini {
+    margin: 0;
+    background: var(--white);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  .award-mini picture,
+  .award-mini img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+  .award-mini figcaption {
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-meta);
+    text-align: center;
+  }
+
+  /* Copy — right column. Eyebrow, name, credential and rating are wrapped in
+     one .identity flex column with a single small gap between all four, so
+     the spacing between each is visibly consistent instead of four
+     different hand-picked margin-bottom values (previously 6 / 18 / 16px —
+     inconsistent, and the 18px under the name read as "too much space"). */
+  .identity {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* One controlled gap before the narrative below — not stacked with a
+       second margin on .meet-body, which was doubling up the space after
+       the rating line. */
+    margin-bottom: 24px;
+  }
+  .eyebrow-script {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--coral);
+  }
+  .about-copy h1 {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--ink-strong);
+  }
+  .about-credential {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: var(--green);
+  }
+
+  /* Real Google rating — verifiable trust signal, not decorative. */
+  .rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rating-stars {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .star {
+    fill: var(--hairline);
+  }
+  .star--on {
+    fill: var(--amber);
+  }
+  .rating-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-meta);
+  }
+
+
+  /* --- Responsive: photo stacks above copy below 860px ----------------- */
+  @media (max-width: 860px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .about-left {
+      /* Explicit width (not margin-inline: auto) — auto margins on a grid
+         item switch it out of stretch sizing, which then can't resolve the
+         100%-width children below it (circular: children want 100% of a
+         parent whose own width now depends on content) and collapses both
+         to 0. This constraint now lives on the whole left column (photo +
+         award thumbnails together), not just the photo alone. */
+      width: 100%;
+      max-width: 360px;
+      justify-self: center;
+      /* Not sticky once stacked — the columns are no longer side by side,
+         so there's nothing for it to stay level with. */
+      position: static;
+    }
+    .about-copy h1 {
+      font-size: 32px;
+    }
+  }
+
+  /* --- Mission / Vision ------------------------------------------------- */
+  .story {
+    background: var(--section-cream);
+    padding-block: var(--section-y);
+  }
+  .story-head {
+    text-align: center;
+    margin-bottom: 44px;
+  }
+  .story-head h2 {
+    font-size: clamp(28px, 4vw, 32px);
+    font-weight: 800;
+    color: var(--ink-strong);
+  }
+  .story-head .hl {
+    color: var(--coral);
+  }
+
+  /* 2 columns now — Backstory card removed (folded into the About page's
+     first-person narrative above instead of repeating it here). */
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .story-card {
+    background: var(--white);
+    border-radius: var(--r-lg);
+    padding: 40px 34px;
+    box-shadow: var(--shadow-card);
+  }
+  .story-card h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink-strong);
+    margin-bottom: 16px;
+  }
+  .story-card p {
+    /* 1.6 line-height — matches .meet-body p below for one consistent
+       body-text rhythm across the page (was 1.7 here, 1.6 there). */
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+  /* One-line pull-quote inside the Mission card — reuses the peach/coral
+     callout pattern from DESIGN_TOKENS (the same treatment the old
+     standalone aphorism box used) rather than inventing a new style. */
+  .story-quote {
+    margin-top: 16px;
+    background: var(--callout-peach);
+    border-left: 4px solid var(--coral);
+    border-radius: var(--r-sm);
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--text-callout);
+  }
+  .story-vision-lead {
+    margin-bottom: 14px;
+  }
+  .story-vision-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .story-vision-list li {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    padding-left: 20px;
+    position: relative;
+  }
+  .story-vision-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+
+  .story-cta {
+    margin-top: 44px;
+    background: var(--green);
+    border-radius: var(--r-lg);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .story-cta-text {
+    color: var(--white);
+    font-size: 22px;
+    font-weight: 700;
+    max-width: 520px;
+  }
+
+  @media (max-width: 860px) {
+    .story-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .story-cta {
+      padding: 32px 24px;
+    }
+    .story-cta-text {
+      font-size: 19px;
+    }
+  }
+
+  /* --- Jyoti's first-person narrative, nested inside .about-copy -------- */
+  .meet-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* No margin-top here — spacing before this block is controlled solely
+       by .identity's own margin-bottom above, so the gap after the rating
+       line isn't the sum of two separate margins. */
+  }
+  .meet-body p {
+    /* 16px/1.6 — the standard web body-text size (Material Design,
+       Bootstrap, WCAG readability baseline), matching .story-card p below
+       for one consistent size across every paragraph on the page. */
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+</style>

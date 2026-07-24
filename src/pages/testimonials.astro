@@ -1,0 +1,417 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import TestimonialVideoCard from '../components/TestimonialVideoCard.astro';
+import WhatsAppCTA from '../components/WhatsAppCTA.astro';
+import { SITE, CONTACT } from '../consts';
+import {
+  TESTIMONIALS,
+  TESTIMONIAL_VIDEOS,
+  SERVICE_FILTERS,
+  type ServiceId,
+} from '../data/testimonials';
+
+// --- schema.org: one Service node per service, with AggregateRating (only
+//     from reviews that actually carried a star rating) + Review list. ------
+const graph = SERVICE_FILTERS.map((f) => {
+  const reviews = TESTIMONIALS.filter((t) => t.service === f.id);
+  const rated = reviews.filter((t) => t.rating != null);
+
+  const node: Record<string, unknown> = {
+    '@type': 'Service',
+    name: f.label,
+    serviceType: f.label,
+    provider: {
+      '@type': 'LocalBusiness',
+      name: SITE.name,
+      areaServed: 'Pune, India',
+      telephone: `+${CONTACT.phoneRaw}`,
+    },
+    review: reviews.map((t) => ({
+      '@type': 'Review',
+      author: { '@type': 'Person', name: t.name },
+      reviewBody: t.text,
+      ...(t.rating != null
+        ? {
+            reviewRating: {
+              '@type': 'Rating',
+              ratingValue: t.rating,
+              bestRating: 5,
+              worstRating: 1,
+            },
+          }
+        : {}),
+    })),
+  };
+
+  if (rated.length > 0) {
+    const avg = rated.reduce((s, t) => s + (t.rating ?? 0), 0) / rated.length;
+    node.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: Number(avg.toFixed(1)),
+      reviewCount: rated.length,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
+  return node;
+});
+
+const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
+
+// Default tab = first service. No "All" tab.
+const defaultService: ServiceId = SERVICE_FILTERS[0].id;
+const defaultWaMessage = SERVICE_FILTERS[0].waMessage;
+---
+
+<BaseLayout
+  title="Testimonials"
+  path="/testimonials"
+  description="Real client reviews for Handwriting Speaks — handwriting & signature analysis, graphotherapy, and handwriting improvement by Jyoti Maheswari, Pune."
+>
+  <section class="tst" aria-labelledby="tst-heading">
+    <div class="container">
+      <header class="tst-head">
+        <p class="eyebrow-script">What clients say</p>
+        <h1 id="tst-heading">In their own words</h1>
+        <p class="tst-sub">
+          Real experiences from people who came to understand themselves through
+          handwriting and signature analysis — and made lasting changes with
+          Jyoti's guidance.
+        </p>
+      </header>
+
+      <!-- Filter tabs (one per service; first is selected by default) -->
+      <div
+        class="tabs"
+        role="tablist"
+        aria-label="Filter testimonials by service"
+      >
+        {
+          SERVICE_FILTERS.map((f, i) => (
+            <button
+              id={`tab-${f.id}`}
+              class="tab"
+              role="tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls="tgrid"
+              tabindex={i === 0 ? 0 : -1}
+              data-service={f.id}
+              data-wa={f.waMessage}
+            >
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <!-- Videos for the active service. Whole section collapses (not just
+           left empty) when the active tab has none — e.g. Graphotherapy. -->
+      <div
+        id="vsection"
+        class="vsection"
+        hidden={!TESTIMONIAL_VIDEOS.some((v) => v.service === defaultService)}
+      >
+        <p class="section-label">Hear it from them</p>
+        <div id="vgrid" class="vgrid">
+          {
+            TESTIMONIAL_VIDEOS.map((v) => (
+              <TestimonialVideoCard
+                {...v}
+                hidden={v.service !== defaultService}
+              />
+            ))
+          }
+        </div>
+      </div>
+
+      <p class="section-label">Read reviews</p>
+
+      <!-- Cards: all real reviews in one masonry region; tabs filter them.
+           Non-active services start hidden so there's no flash before JS. -->
+      <div
+        id="tgrid"
+        class="tgrid"
+        role="region"
+        aria-label={`Testimonials — showing ${SERVICE_FILTERS[0].label}`}
+        aria-live="polite"
+      >
+        {
+          TESTIMONIALS.map((t) => (
+            <TestimonialCard {...t} hidden={t.service !== defaultService} />
+          ))
+        }
+      </div>
+
+      <!-- CTA (message updates to match the active tab) -->
+      <div class="tst-cta">
+        <p class="tst-cta-text">Ready to know more about yourself?</p>
+        <WhatsAppCTA
+          label="Chat on WhatsApp"
+          message={defaultWaMessage}
+          variant="whatsapp"
+          large
+        />
+      </div>
+    </div>
+  </section>
+
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(jsonLd)}
+  />
+</BaseLayout>
+
+<style>
+  .tst {
+    padding-block: var(--section-y);
+  }
+  .tst-head {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 40px;
+  }
+  .eyebrow-script {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--coral);
+    margin-bottom: 2px;
+  }
+  .tst-head h1 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 6vw, 46px);
+    font-weight: 700;
+    color: var(--ink-strong);
+    margin-bottom: 14px;
+  }
+  .tst-sub {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* --- Tabs ----------------------------------------------------------- */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 44px;
+  }
+  .tab {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    background: transparent;
+    border: 2px solid var(--hairline);
+    border-radius: var(--r-pill);
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .tab:hover {
+    border-color: var(--green-mid);
+    color: var(--green);
+  }
+  .tab[aria-selected='true'] {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--white);
+  }
+
+  /* --- Section labels --------------------------------------------------- */
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-meta);
+    margin: 0 0 16px;
+  }
+
+  /* --- Video row -------------------------------------------------------- */
+  .vsection {
+    margin-bottom: 40px;
+  }
+  .vsection[hidden] {
+    display: none;
+  }
+  /* Flex + centered, not a stretching grid: each card keeps its own fixed
+     max-width (set on .vcard) so 1-3 videos never get stretched into wide
+     columns that would distort the 9:16 aspect ratio. This also means a
+     small set (e.g. 1 video) never leaves empty grid tracks. */
+  .vgrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  /* --- Masonry grid --------------------------------------------------- */
+  .tgrid {
+    column-count: 3;
+    column-gap: 24px;
+  }
+  @media (max-width: 860px) {
+    .tgrid {
+      column-count: 2;
+    }
+  }
+  @media (max-width: 560px) {
+    .tgrid {
+      column-count: 1;
+    }
+  }
+
+  /* --- CTA ------------------------------------------------------------ */
+  .tst-cta {
+    margin-top: 44px;
+    background: var(--green);
+    border-radius: var(--r-lg);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .tst-cta-text {
+    color: var(--white);
+    font-size: 22px;
+    font-weight: 700;
+    max-width: 520px;
+  }
+  @media (max-width: 560px) {
+    .tst-cta {
+      padding: 32px 24px;
+    }
+    .tst-cta-text {
+      font-size: 19px;
+    }
+  }
+
+  .tabs-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 20px 0;
+  }
+</style>
+
+<script>
+  // Accessible filter-tabs: roving tabindex, arrow/Home/End keys, automatic
+  // activation. Filtering hides non-matching cards (so screen readers skip
+  // them) and re-caps the masonry columns so small sets never look sparse.
+  const tablist = document.querySelector<HTMLElement>('[role="tablist"]');
+  const tabs = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('.tab')
+  );
+  const grid = document.getElementById('tgrid');
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>('.tcard')
+  );
+  const vsection = document.getElementById('vsection');
+  const vcards = Array.from(
+    document.querySelectorAll<HTMLElement>('.vcard')
+  );
+  const ctaLink = document.querySelector<HTMLAnchorElement>('.tst-cta .wa-cta');
+  const waBase = 'https://wa.me/918380092621?text=';
+
+  // Apply the initially-selected tab's filter on load (sets columns + CTA).
+  const initialTab =
+    tabs.find((t) => t.getAttribute('aria-selected') === 'true') ?? tabs[0];
+
+  function maxColsForViewport(): number {
+    if (window.matchMedia('(max-width: 560px)').matches) return 1;
+    if (window.matchMedia('(max-width: 860px)').matches) return 2;
+    return 3;
+  }
+
+  function applyFilter(service: string, label: string, waMessage: string) {
+    let visible = 0;
+    cards.forEach((card) => {
+      const match = card.dataset.service === service;
+      card.hidden = !match;
+      if (match) visible++;
+    });
+
+    // Requirement 5: never leave empty columns for small sets.
+    if (grid) {
+      grid.style.columnCount = String(
+        Math.max(1, Math.min(visible, maxColsForViewport()))
+      );
+      grid.setAttribute('aria-label', `Testimonials — showing ${label}`);
+    }
+
+    // Videos: filter the same way, and collapse the whole section (not just
+    // an empty row) when the active service has no video — e.g. Graphotherapy.
+    // No column-count math needed here: .vgrid is a centered flex row and
+    // each .vcard has its own fixed max-width, so it never stretches cards
+    // into wide, aspect-ratio-breaking columns regardless of count.
+    let visibleVideos = 0;
+    vcards.forEach((card) => {
+      const match = card.dataset.service === service;
+      card.hidden = !match;
+      if (match) visibleVideos++;
+    });
+    if (vsection) vsection.hidden = visibleVideos === 0;
+
+    // Keep the CTA's prefilled message in step with what's being viewed.
+    if (ctaLink && waMessage) {
+      ctaLink.href = waBase + encodeURIComponent(waMessage);
+    }
+  }
+
+  function selectTab(tab: HTMLButtonElement, setFocus = true) {
+    tabs.forEach((t) => {
+      const selected = t === tab;
+      t.setAttribute('aria-selected', String(selected));
+      t.tabIndex = selected ? 0 : -1;
+    });
+    if (setFocus) tab.focus();
+    applyFilter(
+      tab.dataset.service ?? '',
+      tab.textContent?.trim() ?? '',
+      tab.dataset.wa ?? ''
+    );
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => selectTab(tab, false));
+    tab.addEventListener('keydown', (e) => {
+      let next = -1;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      else return;
+      e.preventDefault();
+      selectTab(tabs[next]);
+    });
+  });
+
+  // Sync columns / CTA / aria-label to the default tab on load.
+  applyFilter(
+    initialTab.dataset.service ?? '',
+    initialTab.textContent?.trim() ?? '',
+    initialTab.dataset.wa ?? ''
+  );
+
+  // Re-cap columns on resize so the responsive breakpoints stay honoured
+  // while a filter is active.
+  let resizeTimer: number;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      const active =
+        tabs.find((t) => t.getAttribute('aria-selected') === 'true') ?? tabs[0];
+      applyFilter(
+        active.dataset.service ?? '',
+        active.textContent?.trim() ?? '',
+        active.dataset.wa ?? ''
+      );
+    }, 150);
+  });
+</script>

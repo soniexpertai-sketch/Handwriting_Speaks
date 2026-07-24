@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import WhatsAppCTA from '../components/WhatsAppCTA.astro';
+import { SERVICES } from '../consts';
+---
+
+<BaseLayout
+  title="Services"
+  path="/services"
+  description="Our services — Handwriting & Signature Analysis, Signature Analysis & Correction, Logo Analyst, Color Analyst, Drawing & Doodle Analyst, and Handwriting Improvement for Students. Enquire on WhatsApp."
+>
+  <section class="services" aria-labelledby="services-heading">
+    <div class="container">
+      <header class="services-head">
+        <h1 id="services-heading" class="services-title">Our services</h1>
+      </header>
+
+      <div class="services-grid">
+        {
+          SERVICES.map((s) => (
+            <ServiceCard title={s.title} description={s.description} />
+          ))
+        }
+      </div>
+
+      <div class="services-cta">
+        <p class="services-cta-text">
+          Get a customised consultation to empower your confidence, behaviour and
+          performance.
+        </p>
+        <WhatsAppCTA label="Chat with our team" variant="whatsapp" large />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .services {
+    padding-block: var(--section-y);
+  }
+  .services-head {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  /* "Our services" — Caveat green script. Sized up from 22px (an "eyebrow"
+     size, too small for the page's single H1) to a proper display heading,
+     matching the scale other page H1s use (e.g. Contact's clamp(38,6vw,46)). */
+  .services-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 6vw, 56px);
+    font-weight: 700;
+    color: var(--green);
+    margin: 0;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .services-cta {
+    margin-top: 44px;
+    background: var(--green);
+    border-radius: var(--r-lg);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .services-cta-text {
+    color: var(--white);
+    font-size: 22px;
+    font-weight: 700;
+    max-width: 520px;
+  }
+
+  @media (max-width: 860px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+    .services-cta {
+      padding: 32px 24px;
+    }
+    .services-cta-text {
+      font-size: 19px;
+    }
+  }
+</style>

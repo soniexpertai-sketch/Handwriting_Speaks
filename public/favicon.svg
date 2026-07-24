@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">
+  <!-- Simplified crop of the real logo.jpg's colors — favicons render at
+       16-32px, where the full logo's baked-in wordmark text would be
+       illegible, so this keeps just the recognizable green-circle shape. -->
+  <circle cx="22" cy="22" r="22" fill="#54AC8A" />
+  <circle cx="22" cy="22" r="16" fill="#ffffff" />
+</svg>
