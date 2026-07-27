@@ -36,8 +36,9 @@ export const CONTACT = {
   // copied listing text has been removed as a copy-paste artifact.
   // "Unit No." corrected to "Villa No." per Jyoti's request (2026-07-21).
   // "C3, 004" corrected to "C3 - 004" per Jyoti's request (2026-07-21).
-  address:
-    'Villa No. C3 - 004, Westernhills Rd, Baner Annex, Phase 1, Baner, Pune, Maharashtra 411021',
+  // Shortened to just "Baner Annex, Pune, Maharashtra 411021" per Jyoti's
+  // request (2026-07-24) — drops the villa number/street name.
+  address: 'Baner Annex, Pune, Maharashtra 411021',
   // ⚠️ No Facebook page URL on file yet — do not invent one. Add it here
   // (and un-comment the Facebook icon link on the Contact page) once
   // confirmed. See facebookUrl below.
@@ -109,14 +110,14 @@ export const SERVICES = [
     slug: 'color-analyst',
     title: 'Color Analyst',
     description:
-      'Colours carry psychology. We help you choose palettes for your brand, home or wardrobe that resonate with the identity you want to project.',
+      "Colour Analysis helps understand an individual's personality, emotions, and behavioural tendencies through their colour preferences. It offers valuable insights that support greater self-awareness and personal growth.",
     waMessage: "Hi! I'm interested in Color Analysis.",
   },
   {
     slug: 'drawing-doodle-analyst',
     title: 'Drawing & Doodle Analyst',
     description:
-      "Even a stray doodle speaks. We interpret sketches to reveal subconscious thoughts, moods and personality cues you didn't know you were sharing.",
+      "Drawing & Doodle Analysis helps understand an individual's emotional expression, confidence, and the influence of parental and environmental support through their drawings and doodles. It is especially beneficial for young children who are not yet able to write properly or express their feelings in words.",
     waMessage: "Hi! I'm interested in Drawing & Doodle Analysis.",
   },
   {
