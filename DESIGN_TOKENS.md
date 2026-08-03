@@ -117,10 +117,24 @@ Spacing is expressed in raw px in the source. Observed values, grouped:
 - **Section vertical rhythm:** `100px` top/bottom is the dominant section
   padding (`padding:100px 48px`). Variants: `90px` (quote banner), `64px`
   (problem strip), `32px` (footer). Hero uses `90px 48px 100px`.
+  - ⚠️ **Updated 2026-07-28 (Home page):** Home sections use `56px`
+    top/bottom and the quote banner `40px`, down from `100px` / `90px`.
+    Reason: the mockup's 100px rhythm was set for long sections; Home's
+    are short (the quote banner is two lines), so 200px of padding around
+    78px of content read as empty bands rather than breathing room. The
+    `--section-y` token is unchanged at 100px and other pages still use it.
 - **Horizontal gutter:** `48px` on all full-width section paddings.
 - **Content max-widths:** `1280px` (hero), `1100px` (most sections), `1000px`
   (personality), `900px` (contact), `800px` (quote banner). Centered via
   `margin:0 auto`.
+  - ⚠️ **Updated 2026-07-28 (Home page):** every block on the Home page now
+    uses the single `1100px` container — hero and quote banner included,
+    rather than the `1280px` / `800px` the mockup gave them. Reason: Jyoti
+    asked for all text on the page to share one left edge, and three
+    different container widths put the hero, the sections, and the quote at
+    three different indents. One width is the only way to align them. The
+    `--container-wide` (1280px) token still exists and is still used by the
+    sticky header. Other pages are unchanged.
 - **Grid gaps:** `24px` (3-col card grids), `40px` (2-col splits, problem strip),
   `60px` (about split).
 - **Nav padding:** `20px 48px`.

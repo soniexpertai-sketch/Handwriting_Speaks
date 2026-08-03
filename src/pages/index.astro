@@ -1,107 +1,209 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { CONTACT } from '../consts';
+
+// What analysis surfaces. Split into term + detail so each can render as a
+// card rather than a bullet — same wording as before, from Jyoti's own
+// first-person bio (CONTENT_LIBRARY.md §3 "Analysis outputs").
+const REVEALS = [
+  { term: 'Personality traits', detail: 'including the ones you don’t show' },
+  { term: 'Strengths', detail: 'you may not have recognised in yourself' },
+  { term: 'Thinking patterns', detail: 'how you process and decide' },
+  { term: 'Emotional responses', detail: 'and what sets them off' },
+  { term: 'Fears', detail: 'and the defence mechanisms built around them' },
+  { term: 'Area that needs improvement', detail: '' },
+];
+
+// "Key areas of Consultation" — transcribed verbatim from the approved
+// reference poster (CONTENT_LIBRARY.md IMG-04). Local to this page rather
+// than in consts.ts: this is Home-page editorial content, not shared config
+// like SERVICES (which drives the Services page cards and their per-service
+// WhatsApp messages).
+// "Selecting the right match for your professional and personal
+// association" was dropped from the source list (2026-07-28) — its length
+// forced every card in the row to the height of its 3-line title. The
+// remaining four fit one row evenly.
+const KEY_AREAS = [
+  'Know yourself',
+  'Student & Teenagers development growth',
+  'Recruitment & Employee Assessment',
+  'Insight into your signature and correction',
+];
 ---
 
 <BaseLayout title="Home" path="/">
+ <div class="home">
+  <!-- Decorative 3D floating letters. Sits at page level, not inside the
+       hero, so it spans every section — inside .hero it was boxed to that
+       one section by `inset: 0` and clipped by its `overflow: hidden`.
+       z-index 1 puts it above each section's own background fill (the
+       pale-green and navy bands are opaque and would otherwise hide it)
+       while every section's content sits at z-index 2, above the letters.
+       Purely visual: aria-hidden and pointer-events:none. -->
+  <div class="floating-letters" aria-hidden="true">
+    <span class="fl fl-1">h</span>
+    <span class="fl fl-2">s</span>
+    <span class="fl fl-3">y</span>
+    <span class="fl fl-4">o</span>
+    <span class="fl fl-5">u</span>
+    <span class="fl fl-6">a</span>
+    <span class="fl fl-7">w</span>
+    <span class="fl fl-8">n</span>
+    <span class="fl fl-9">d</span>
+    <span class="fl fl-10">r</span>
+    <span class="fl fl-11">e</span>
+    <span class="fl fl-12">g</span>
+  </div>
+
   <!-- HERO -->
   <section class="hero" aria-labelledby="hero-heading">
-    <!-- Decorative 3D floating letters, behind all hero content. Purely
-         visual — aria-hidden, pointer-events:none, and low-opacity so it
-         never competes with the real copy/photo in front of it. -->
-    <div class="floating-letters" aria-hidden="true">
-      <span class="fl fl-1">h</span>
-      <span class="fl fl-2">s</span>
-      <span class="fl fl-3">y</span>
-      <span class="fl fl-4">o</span>
-      <span class="fl fl-5">u</span>
-      <span class="fl fl-6">a</span>
-      <span class="fl fl-7">w</span>
-      <span class="fl fl-8">n</span>
-      <span class="fl fl-9">d</span>
-      <span class="fl fl-10">r</span>
-      <span class="fl fl-11">e</span>
-      <span class="fl fl-12">g</span>
-    </div>
-
-    <div class="container container--wide hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Handwriting &amp; Signature Analysis</p>
-        <h1 id="hero-heading" class="hero-title">
-          Discover Yourself Through the Power of Handwriting
-        </h1>
-        <p class="hero-subtitle">Unlock Your True Potential</p>
-        <div class="hero-lead">
-          <p>
-            {CONTACT.analyst} is a Certified Handwriting &amp; Signature
-            Analyst and Graphotherapist who helps students, professionals,
-            entrepreneurs, homemakers, and individuals gain deeper
-            self-awareness through handwriting and signature analysis.
-          </p>
-          <p>
-            With over five years of experience, she empowers people to
-            understand their strengths, overcome limiting patterns, and build
-            confidence through personalised analysis, signature correction,
-            and Graphotherapy. Her mission is to help individuals unlock
-            their true potential and create positive, lasting transformation
-            in their personal and professional lives.
-          </p>
-        </div>
-        <div class="hero-actions">
-          <a href="/contact" class="btn btn--primary">Book a Consultation</a>
-          <a
-            href={CONTACT.instagramUrl}
-            target="_blank"
-            rel="noopener"
-            class="btn btn--outline"
-          >
-            Follow {CONTACT.instagramHandle}
-          </a>
-        </div>
+    <!-- Single full-width text flow with the badge floated out of it, rather
+         than a heading block stacked on a two-column row. Three reasons:
+         every text block now shares one containing block, so their left
+         edges are identical by construction; the copy is no longer boxed
+         into a narrow column, so it runs the width of the page and wraps
+         around the badge; and there is only one translucent card, so
+         nothing can paint over the badge. -->
+    <div class="container">
+     <div class="hero-inner">
+      <img
+        class="badge-outer"
+        src="/images/logo.jpg"
+        alt=""
+        width="340"
+        height="340"
+        loading="eager"
+      />
+      <p class="eyebrow">Handwriting &amp; Signature Analysis</p>
+      <h1 id="hero-heading" class="hero-title">
+        Discover Yourself Through the Power of Handwriting
+      </h1>
+      <p class="hero-subtitle">Unlock Your True Potential</p>
+      <div class="hero-lead">
+        <p>
+          Every stroke of your handwriting tells a story — how you think, what
+          you believe, and why you are the way you are.
+        </p>
+        <p>
+          Handwriting and signature analysis reads that story. Then, through
+          guided correction, it helps you rewrite the parts you'd like to
+          change.
+        </p>
       </div>
-
-      <div class="hero-visual" aria-hidden="true">
-        <img
-          class="badge-outer"
-          src="/images/logo.jpg"
-          alt=""
-          width="340"
-          height="340"
-          loading="eager"
-        />
+      <div class="hero-actions">
+        <a href="/contact" class="btn btn--primary">Book a Consultation</a>
+        <a href="/services" class="btn btn--outline">Explore services</a>
       </div>
+     </div>
     </div>
   </section>
+
+  <!-- WHAT YOUR HANDWRITING REVEALS -->
+  <section class="reveal" aria-labelledby="reveal-heading">
+    <div class="container">
+      <header class="sec-head">
+        <p class="eyebrow-script">Know the most unknowable</p>
+        <h2 id="reveal-heading">What your handwriting reveals</h2>
+        <p class="sec-lead">
+          Human mind and behaviour has always been a mystery. Your handwriting
+          makes it readable.
+        </p>
+      </header>
+
+      <ul class="reveal-grid" role="list">
+        {
+          REVEALS.map((r) => (
+            <li class="reveal-card">
+              <h3>{r.term}</h3>
+              {r.detail && <p>{r.detail}</p>}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- QUOTE BANNER -->
+  <section class="quote-banner" aria-label="On the uniqueness of handwriting">
+    <div class="container quote-inner">
+      <blockquote>
+        Your handwriting is unique, just like your fingerprints. No two persons
+        in the world have the same handwriting — not even twins.
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- WHERE HANDWRITING ANALYSIS HELPS -->
+  <section class="helps" aria-labelledby="helps-heading">
+    <div class="container">
+      <header class="sec-head">
+        <p class="eyebrow-script">Key areas of consultation</p>
+        <h2 id="helps-heading">Where handwriting analysis helps</h2>
+      </header>
+
+      <div class="helps-grid">
+        {
+          KEY_AREAS.map((area) => (
+            <article class="helps-card">
+              <span class="helps-icon" aria-hidden="true">
+                ✎
+              </span>
+              <h3>{area}</h3>
+            </article>
+          ))
+        }
+      </div>
+
+      <p class="helps-note">
+        Analysis is only the first step. With regular practice, simple
+        handwriting exercises — Graphotherapy — help work on habits like
+        procrastination, anger, mood swings, self-doubt, low confidence, lack
+        of focus and indecisiveness.
+      </p>
+    </div>
+  </section>
+
+ </div>
 </BaseLayout>
 
 <style>
-  .hero {
+  /* Positioning context + horizontal clip for the page-wide letter layer.
+     `overflow: hidden` lived on .hero before; it has to sit here now or
+     letters near the edges would widen the page. */
+  .home {
     position: relative;
     overflow: hidden;
-    padding-block: 90px 100px;
   }
-  .hero-grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 40px;
-    align-items: center;
-  }
-
-  /* Brighter floating letters (below) need the real copy to visibly sit
-     "in front" of them rather than just technically stack above via
-     z-index — a soft solid-ish card behind the text gives it its own
-     readable surface instead of the letters showing through the bare
-     page background right behind the words. */
-  .hero-copy {
+  /* Every section's content is lifted above the letter layer (z-index 1)
+     so letters pass behind the words, never over them. */
+  .home > section > .container {
     position: relative;
     z-index: 2;
-    background: rgba(250, 246, 240, 0.82);
-    -webkit-backdrop-filter: blur(2px);
-    backdrop-filter: blur(2px);
-    border-radius: var(--r-lg);
-    padding: 28px 32px;
+  }
+
+  .hero {
+    position: relative;
+    /* Bottom padding trimmed (was 72px) — with the logo pulled up into the
+       heading band it no longer overhangs the text column, so the section
+       can end sooner without the page feeling cramped. */
+    padding-block: 52px 44px;
+  }
+  /* One card for the whole hero, replacing the separate heading/copy cards.
+     Because it is the only translucent layer, nothing can paint over the
+     floated badge inside it — the previous split had .hero-top (z-index 2)
+     sitting above the badge's own grid (z-index 1), and a z-index on the
+     badge couldn't escape that ancestor's stacking context, so the card
+     washed over it. `flow-root` contains the float so the section still
+     wraps its full height. */
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    display: flow-root;
+    /* No inline padding — the container's own 48px gutter is the only
+       horizontal inset, so hero text shares the exact left edge as every
+       section below it. (The card has no visible border: its fill is the
+       page's cream at 82% opacity, so text sitting flush to its edge reads
+       normally.) */
+    padding: 16px 0;
   }
 
   /* Decorative 3D floating letters — full-hero background layer. Each
@@ -113,7 +215,8 @@ import { CONTACT } from '../consts';
   .floating-letters {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    /* Above the section background fills, below section content. */
+    z-index: 1;
     pointer-events: none;
   }
   .fl {
@@ -142,156 +245,27 @@ import { CONTACT } from '../consts';
      each letter its own drift direction so the float reads as scattered
      rather than everything bobbing in lockstep.
 
-     Positions are deliberately confined to three bands that stay clear of
-     the two opaque foreground layers on top of this one (the translucent
-     .hero-copy card and the circular photo badge): the top margin (before
-     .hero-grid's content starts), the bottom margin (after it ends), and
-     the far right edge (outside the photo's centered width within its
-     column). A letter placed mid-column, like the original "u" at
-     top:40%/left:46%, renders directly behind the card and is effectively
-     invisible despite being technically in the DOM. */
-  .fl-1 {
-    top: 0%;
-    left: 4%;
-    /* Capped at 64px (was 108px) — the top band only has ~90px of clearance
-       before .hero-copy's fixed padding-block-start begins (confirmed via
-       getBoundingClientRect: card top sits at a stable 90px from the
-       section top on desktop, regardless of viewport width). A box taller
-       than that clearance dips its lower third behind the card exactly
-       like the original "u" did, just partially instead of fully. */
-    font-size: clamp(40px, 5vw, 64px);
-    color: rgba(31, 111, 92, 0.42); /* --green */
-    text-shadow: 2px 2px 0 rgba(31, 111, 92, 0.22), 4px 4px 0 rgba(31, 111, 92, 0.12);
-    --tilt: rotate(-10deg) rotateX(12deg) rotateY(-8deg);
-    --dx: 14px;
-    transform: var(--tilt);
-    animation-delay: 0s;
-  }
-  .fl-2 {
-    top: 0.5%;
-    left: 40%;
-    font-size: clamp(32px, 4vw, 52px);
-    color: rgba(224, 102, 74, 0.4); /* --coral */
-    text-shadow: 2px 2px 0 rgba(224, 102, 74, 0.2);
-    --tilt: rotate(6deg) rotateX(-10deg) rotateY(10deg);
-    --dx: -12px;
-    transform: var(--tilt);
-    animation-delay: 1.4s;
-  }
-  .fl-3 {
-    top: 0.5%;
-    left: 78%;
-    font-size: clamp(36px, 4.5vw, 60px);
-    color: rgba(247, 173, 74, 0.48); /* --amber */
-    text-shadow: 2px 2px 0 rgba(247, 173, 74, 0.24);
-    --tilt: rotate(-6deg) rotateX(10deg) rotateY(12deg);
-    --dx: -16px;
-    transform: var(--tilt);
-    animation-delay: 2.8s;
-  }
-  .fl-4 {
-    top: 95%;
-    left: 8%;
-    font-size: clamp(40px, 5.5vw, 76px);
-    color: rgba(95, 168, 138, 0.44); /* --green-mid */
-    text-shadow: 2px 2px 0 rgba(95, 168, 138, 0.22);
-    --tilt: rotate(9deg) rotateX(-8deg) rotateY(-10deg);
-    --dx: 10px;
-    transform: var(--tilt);
-    animation-delay: 0.7s;
-  }
-  .fl-5 {
-    top: 96%;
-    left: 48%;
-    font-size: clamp(44px, 6vw, 84px);
-    color: rgba(193, 74, 114, 0.4); /* --magenta */
-    text-shadow: 2px 2px 0 rgba(193, 74, 114, 0.2);
-    --tilt: rotate(-4deg) rotateX(8deg) rotateY(6deg);
-    --dx: 18px;
-    transform: var(--tilt);
-    animation-delay: 2.1s;
-  }
-  .fl-6 {
-    top: 94%;
-    left: 82%;
-    font-size: clamp(32px, 4.5vw, 60px);
-    color: rgba(224, 102, 74, 0.34);
-    text-shadow: 2px 2px 0 rgba(224, 102, 74, 0.16);
-    --tilt: rotate(8deg) rotateX(-6deg) rotateY(-6deg);
-    --dx: -10px;
-    transform: var(--tilt);
-    animation-delay: 3.5s;
-  }
-  .fl-7 {
-    top: 38%;
-    left: 95%;
-    font-size: clamp(32px, 4.5vw, 60px);
-    color: rgba(247, 173, 74, 0.4);
-    text-shadow: 2px 2px 0 rgba(247, 173, 74, 0.2);
-    --tilt: rotate(-8deg) rotateX(9deg) rotateY(9deg);
-    --dx: 12px;
-    transform: var(--tilt);
-    animation-delay: 1.9s;
-  }
-  .fl-8 {
-    top: 14%;
-    left: 96%;
-    font-size: clamp(28px, 4vw, 52px);
-    color: rgba(31, 111, 92, 0.36);
-    text-shadow: 2px 2px 0 rgba(31, 111, 92, 0.18);
-    --tilt: rotate(5deg) rotateX(-9deg) rotateY(-11deg);
-    --dx: -14px;
-    transform: var(--tilt);
-    animation-delay: 0.4s;
-  }
-  .fl-9 {
-    top: 62%;
-    left: 97%;
-    font-size: clamp(28px, 4vw, 52px);
-    color: rgba(95, 168, 138, 0.4);
-    text-shadow: 2px 2px 0 rgba(95, 168, 138, 0.2);
-    --tilt: rotate(-7deg) rotateX(7deg) rotateY(10deg);
-    --dx: 16px;
-    transform: var(--tilt);
-    animation-delay: 3.1s;
-  }
-  .fl-10 {
-    top: 0.5%;
-    left: 60%;
-    font-size: clamp(28px, 3.6vw, 48px);
-    color: rgba(193, 74, 114, 0.34);
-    text-shadow: 2px 2px 0 rgba(193, 74, 114, 0.17);
-    --tilt: rotate(10deg) rotateX(-10deg) rotateY(8deg);
-    --dx: -18px;
-    transform: var(--tilt);
-    animation-delay: 2.5s;
-  }
-  /* Left edge — mirrors the fl-7/8/9 right-edge trick: pinned just inside
-     the section's own edge (outside .hero-copy's horizontal span, which
-     starts at the container gutter), clear at any vertical position since
-     nothing else renders out here. Fills the previously-empty left side. */
-  .fl-11 {
-    top: 32%;
-    left: 0.5%;
-    font-size: clamp(28px, 4vw, 52px);
-    color: rgba(95, 168, 138, 0.4);
-    text-shadow: 2px 2px 0 rgba(95, 168, 138, 0.2);
-    --tilt: rotate(7deg) rotateX(-8deg) rotateY(11deg);
-    --dx: 14px;
-    transform: var(--tilt);
-    animation-delay: 1.1s;
-  }
-  .fl-12 {
-    top: 70%;
-    left: 1%;
-    font-size: clamp(28px, 4vw, 52px);
-    color: rgba(247, 173, 74, 0.4);
-    text-shadow: 2px 2px 0 rgba(247, 173, 74, 0.2);
-    --tilt: rotate(-9deg) rotateX(8deg) rotateY(-10deg);
-    --dx: -16px;
-    transform: var(--tilt);
-    animation-delay: 2.9s;
-  }
+     Positions are confined to the page margins either side of the 1100px
+     content column. At a 1280px viewport that column spans x:130-1150, so
+     the clear bands are x<130 and x>1150 — roughly 2% and 93% in
+     percentage terms. Keeping every letter there means none can ever sit
+     behind a line of text at any scroll position, which matters now that
+     this layer runs the full page height rather than just the hero.
+     Vertically they are spaced evenly from 3% to 91% so the drift is
+     visible in every section. */
+  .fl { --dx: 12px; }
+  .fl-1  { top: 3%;  left: 2%;  font-size: clamp(46px, 5.0vw, 82px); color: rgba(31,111,92,0.42);  text-shadow: 2px 2px 0 rgba(31,111,92,0.22); --tilt: rotate(-10deg) rotateX(12deg) rotateY(-8deg);  --dx: 14px;  animation-delay: 0s;    transform: var(--tilt); }
+  .fl-2  { top: 11%; left: 93%; font-size: clamp(44px, 4.8vw, 78px); color: rgba(224,102,74,0.4);  text-shadow: 2px 2px 0 rgba(224,102,74,0.2);  --tilt: rotate(6deg) rotateX(-10deg) rotateY(10deg);  --dx: -12px; animation-delay: 1.4s;  transform: var(--tilt); }
+  .fl-3  { top: 19%; left: 2%;  font-size: clamp(44px, 4.8vw, 76px); color: rgba(247,173,74,0.48); text-shadow: 2px 2px 0 rgba(247,173,74,0.24); --tilt: rotate(-6deg) rotateX(10deg) rotateY(12deg);  --dx: -16px; animation-delay: 2.8s;  transform: var(--tilt); }
+  .fl-4  { top: 27%; left: 93%; font-size: clamp(46px, 5.0vw, 80px); color: rgba(95,168,138,0.44); text-shadow: 2px 2px 0 rgba(95,168,138,0.22); --tilt: rotate(9deg) rotateX(-8deg) rotateY(-10deg); --dx: 10px;  animation-delay: 0.7s;  transform: var(--tilt); }
+  .fl-5  { top: 36%; left: 2%;  font-size: clamp(44px, 4.8vw, 78px); color: rgba(193,74,114,0.4);  text-shadow: 2px 2px 0 rgba(193,74,114,0.2);  --tilt: rotate(-4deg) rotateX(8deg) rotateY(6deg);    --dx: 18px;  animation-delay: 2.1s;  transform: var(--tilt); }
+  .fl-6  { top: 44%; left: 93%; font-size: clamp(26px, 3vw, 44px);   color: rgba(224,102,74,0.34); text-shadow: 2px 2px 0 rgba(224,102,74,0.16); --tilt: rotate(8deg) rotateX(-6deg) rotateY(-6deg);   --dx: -10px; animation-delay: 3.5s;  transform: var(--tilt); }
+  .fl-7  { top: 52%; left: 2%;  font-size: clamp(44px, 4.8vw, 76px); color: rgba(247,173,74,0.4);  text-shadow: 2px 2px 0 rgba(247,173,74,0.2);  --tilt: rotate(-8deg) rotateX(9deg) rotateY(9deg);    --dx: 12px;  animation-delay: 1.9s;  transform: var(--tilt); }
+  .fl-8  { top: 60%; left: 93%; font-size: clamp(26px, 3vw, 44px);   color: rgba(31,111,92,0.36);  text-shadow: 2px 2px 0 rgba(31,111,92,0.18);  --tilt: rotate(5deg) rotateX(-9deg) rotateY(-11deg);  --dx: -14px; animation-delay: 0.4s;  transform: var(--tilt); }
+  .fl-9  { top: 68%; left: 2%;  font-size: clamp(44px, 4.8vw, 78px); color: rgba(95,168,138,0.4);  text-shadow: 2px 2px 0 rgba(95,168,138,0.2);  --tilt: rotate(-7deg) rotateX(7deg) rotateY(10deg);   --dx: 16px;  animation-delay: 3.1s;  transform: var(--tilt); }
+  .fl-10 { top: 76%; left: 93%; font-size: clamp(26px, 3vw, 42px);   color: rgba(193,74,114,0.34); text-shadow: 2px 2px 0 rgba(193,74,114,0.17); --tilt: rotate(10deg) rotateX(-10deg) rotateY(8deg);  --dx: -18px; animation-delay: 2.5s;  transform: var(--tilt); }
+  .fl-11 { top: 84%; left: 2%;  font-size: clamp(44px, 4.8vw, 76px); color: rgba(95,168,138,0.4);  text-shadow: 2px 2px 0 rgba(95,168,138,0.2);  --tilt: rotate(7deg) rotateX(-8deg) rotateY(11deg);   --dx: 14px;  animation-delay: 1.1s;  transform: var(--tilt); }
+  .fl-12 { top: 91%; left: 93%; font-size: clamp(26px, 3vw, 44px);   color: rgba(247,173,74,0.4);  text-shadow: 2px 2px 0 rgba(247,173,74,0.2);  --tilt: rotate(-9deg) rotateX(8deg) rotateY(-10deg); --dx: -16px; animation-delay: 2.9s;  transform: var(--tilt); }
 
   @keyframes fl-float {
     0%,
@@ -309,19 +283,11 @@ import { CONTACT } from '../consts';
     }
   }
 
-  /* Fewer, smaller, quieter letters on narrow screens — the full set at
-     full size would overpower the stacked single-column layout and fight
-     with the copy for attention once there's no side-by-side space. */
+  /* Hidden entirely below 640px. The gutter drops to 20px there, which is
+     narrower than the letters themselves — there is no margin left for
+     them to occupy without sitting behind the copy. */
   @media (max-width: 640px) {
-    .fl-4,
-    .fl-5,
-    .fl-6,
-    .fl-7,
-    .fl-8,
-    .fl-9,
-    .fl-10,
-    .fl-11,
-    .fl-12 {
+    .floating-letters {
       display: none;
     }
   }
@@ -350,18 +316,23 @@ import { CONTACT } from '../consts';
     color: var(--ink-strong);
     margin-bottom: 12px;
   }
+  /* The three coral Caveat lines on this page ("Unlock Your True
+     Potential", "Know the most unknowable", "Key areas of consultation")
+     are one type role, set at one fixed size so they can't drift apart. */
+  .hero-subtitle {
+    font-size: 32px;
+  }
   .hero-subtitle {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(24px, 3vw, 30px);
     color: var(--coral);
-    margin-bottom: 22px;
+    margin-bottom: 18px;
   }
-  /* Now a container of two <p> — was a single <p> before this copy grew
-     to two paragraphs, so it needs its own inter-paragraph spacing. */
+  /* Uncapped — the copy now runs the full container width and wraps around
+     the floated badge, instead of being held to a 640px column inside a
+     1265px container (which is what left it sitting in a narrow strip). */
   .hero-lead {
-    max-width: 520px;
-    margin-bottom: 34px;
+    margin-bottom: 0;
   }
   .hero-lead p {
     font-size: 18px;
@@ -369,29 +340,32 @@ import { CONTACT } from '../consts';
     color: var(--text-muted);
   }
   .hero-lead p + p {
-    margin-top: 16px;
+    margin-top: 14px;
   }
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 14px;
+    margin-top: 26px;
   }
 
-  /* Visual column — round brand badge + floating accents */
-  .hero-visual {
-    position: relative;
-    display: flex;
-    justify-content: center;
-  }
   /* logo.jpg (960x960, replaced the earlier logo.svg 2026-07-23 — same
      design, raster now) is a square canvas filled edge-to-edge with the
      brand green and its own circular white disc + wordmark + tagline drawn
      inside — clipping the whole image to a circle here reproduces the same
      badge look that used to be hand-built from nested divs, using the real
-     logo asset. */
+     logo asset.
+
+     Floated rather than placed in its own grid column so the text flows
+     around it and still uses the full page width. shape-outside makes that
+     wrap follow the circle instead of its square box, so lines tuck into
+     the curve rather than stopping at a straight invisible edge. */
   .badge-outer {
-    display: block;
-    width: 340px;
+    float: right;
+    shape-outside: circle(50%);
+    shape-margin: 24px;
+    margin: 0 0 16px 40px;
+    width: 300px;
     /* height: auto (not a fixed 340px) — with a fixed height, max-width:80vw
        could shrink the rendered width on narrow screens while height stayed
        locked at 340px, distorting the circle into an oval (confirmed:
@@ -407,22 +381,168 @@ import { CONTACT } from '../consts';
   /* --- Responsive ----------------------------------------------------- */
   @media (max-width: 860px) {
     .hero {
-      padding-block: 56px 72px;
+      padding-block: 56px 64px;
     }
-    .hero-grid {
+    /* Un-float below 860px: there isn't enough width for text to wrap
+       beside a 300px circle without the lines becoming too short to read,
+       so the badge becomes a centred block above the copy instead. */
+    .badge-outer {
+      float: none;
+      shape-outside: none;
+      margin: 0 auto 28px;
+    }
+  }
+
+  /* =====================================================================
+     Shared section furniture — used by every section below the hero.
+     ===================================================================== */
+  .sec-head {
+    margin-bottom: 32px;
+    max-width: 720px;
+  }
+  .sec-head h2 {
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--ink-strong);
+  }
+  .sec-lead {
+    margin-top: 14px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+  /* Caveat script eyebrow — the same treatment the About page uses above
+     "Meet your analyst", per DESIGN_TOKENS' "Script eyebrow" type token. */
+
+  /* --- What your handwriting reveals ----------------------------------- */
+  .reveal {
+    background: var(--section-green);
+    padding-block: 64px;
+  }
+  /* Cards, not bullets. Six plain text bullets in two ragged columns was
+     the flattest block on the page; giving each its own surface and a
+     numeral turns the same copy into something with structure and weight,
+     and reuses the card pattern already used by the section below. */
+  .reveal-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .reveal-card {
+    position: relative;
+    background: var(--white);
+    border-radius: var(--r-card);
+    padding: 24px 22px 22px;
+    box-shadow: var(--shadow-card);
+  }
+  .reveal-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--ink-strong);
+  }
+  .reveal-card p {
+    margin-top: 6px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* --- Quote banner ----------------------------------------------------- */
+  .quote-banner {
+    background: var(--banner-navy);
+    padding-block: 56px;
+  }
+  /* The 800px cap that used to live here was what broke this quote onto
+     four lines; at the wide container it sets in two. */
+  .quote-banner blockquote {
+    margin: 0;
+    /* Left-aligned to share the x=80 edge every other block on the page
+       now uses — it was centred, which read as a different indent. */
+    text-align: left;
+    /* 28px, not 30 — at the 1100px container this quote sets to 1980px on
+       one line against 2008px of two-line space. That 28px of slack is
+       less than a single word, so it broke to three lines; 28px leaves
+       ~160px and lands it on two. */
+    font-size: clamp(20px, 2.2vw, 28px);
+    font-weight: 800;
+    line-height: 1.4;
+    color: var(--white);
+  }
+
+  /* --- Where handwriting analysis helps -------------------------------- */
+  .helps {
+    padding-block: 64px;
+  }
+  /* Fixed 4 columns rather than auto-fit: with exactly four cards this
+     puts them on one row at the 1100px container, and auto-fit's 240px
+     minimum would only have fitted three, stranding the fourth. */
+  .helps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .helps-card {
+    background: var(--white);
+    border-radius: var(--r-card);
+    /* Tightened from 30px/26px — cards are narrower in a 4-up row, so the
+       old padding left the copy squeezed against a lot of empty card. */
+    padding: 20px 18px;
+    box-shadow: var(--shadow-card);
+  }
+  .helps-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--green-mid);
+    color: var(--white);
+    font-size: 17px;
+    margin-bottom: 10px;
+  }
+  .helps-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--ink-strong);
+  }
+  .helps-note {
+    margin-top: 24px;
+    max-width: 760px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* --- Responsive: sections below the hero ------------------------------ */
+  @media (max-width: 980px) {
+    .reveal-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 860px) {
+    /* 4-up → 2-up: below this the cards are too narrow for their titles,
+       which are 2-4 words each. */
+    .helps-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .sec-head {
+      margin-bottom: 28px;
+    }
+  }
+  @media (max-width: 560px) {
+    .reveal-grid,
+    .helps-grid {
       grid-template-columns: 1fr;
-      gap: 48px;
     }
-    .hero-visual {
-      order: -1;
-    }
-    .hero-lead {
-      max-width: none;
+    .quote-banner {
+      padding-block: 40px;
     }
   }
-  @media (max-width: 400px) {
-    .hero-actions .btn {
-      width: 100%;
-    }
-  }
+
 </style>

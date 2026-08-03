@@ -260,3 +260,159 @@ p {
   background: #cf5740;
   color: var(--white);
 }
+
+/* --- Script eyebrow heading, shared by every page ---------------------
+   "Meet your analyst", "What clients say", "Know the most unknowable",
+   "Key areas of consultation", "Get in touch". These were defined
+   separately in five page files and had drifted to four different sizes
+   (22 / 28 / 28 / 32px) — one definition here keeps them identical. */
+.eyebrow-script {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--coral);
+  margin-bottom: 6px;
+}
+
+/* =====================================================================
+   Motion — site-wide scroll reveal + entrance animation
+   ---------------------------------------------------------------------
+   Lives here rather than in a page's <style> block on purpose: Astro
+   scopes component CSS with a data attribute, and `.js-anim` sits on
+   <html>, which never carries it — a scoped rule rooted there silently
+   never matches (this exact bug shipped once and animated nothing).
+   Global CSS has no such restriction.
+
+   `.js-anim` is set by an inline <head> script, so the hidden state
+   applies on the very first paint and nothing flashes in then out. If JS
+   is off the class is never added and every block renders visible.
+   ===================================================================== */
+
+/* The blocks that animate in, across all five pages. */
+.js-anim :is(
+  .sec-head, .services-head, .tst-head, .tst-sub, .story-head, .section-label,
+  .reveal-card, .helps-card, .helps-note, .quote-banner blockquote,
+  .about-photo, .awards-mini, .identity, .meet-body,
+  .story-card, .story-cta,
+  .service-card, .services-cta,
+  .tabs, .tcard, .vcard, .tst-cta,
+  .contact-pitch, .info-card, .consult-form, .contact-form-heading, .location
+) {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.js-anim :is(
+  .sec-head, .services-head, .tst-head, .tst-sub, .story-head, .section-label,
+  .reveal-card, .helps-card, .helps-note, .quote-banner blockquote,
+  .about-photo, .awards-mini, .identity, .meet-body,
+  .story-card, .story-cta,
+  .service-card, .services-cta,
+  .tabs, .tcard, .vcard, .tst-cta,
+  .contact-pitch, .info-card, .consult-form, .contact-form-heading, .location
+).is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+  /* --i is set per-element by the reveal script so siblings in a row
+     arrive in sequence instead of snapping in together. */
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* --- Page entrance: the h1 block on every page settles top-down ------- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.js-anim .hero-inner > .eyebrow,
+.js-anim .hero-inner > .hero-title,
+.js-anim .hero-inner > .hero-subtitle,
+.js-anim .hero-inner > .hero-lead,
+.js-anim .hero-inner > .hero-actions {
+  animation: rise-in 0.6s ease-out both;
+}
+.js-anim .hero-inner > .hero-title { animation-delay: 0.08s; }
+.js-anim .hero-inner > .hero-subtitle { animation-delay: 0.16s; }
+.js-anim .hero-inner > .hero-lead { animation-delay: 0.24s; }
+.js-anim .hero-inner > .hero-actions { animation-delay: 0.32s; }
+
+/* --- Brand badge: scales in, then drifts gently forever --------------- */
+@keyframes badge-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes badge-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.js-anim .badge-outer {
+  animation: badge-in 0.7s ease-out both,
+    badge-drift 7s ease-in-out 0.7s infinite;
+}
+
+/* --- Hover lift, shared by every card type across the site ------------ */
+.service-card,
+.tcard,
+.info-card,
+.story-card,
+.reveal-card,
+.helps-card,
+.award-mini {
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.2s ease;
+}
+.service-card:hover,
+.tcard:hover,
+.info-card:hover,
+.story-card:hover,
+.reveal-card:hover,
+.helps-card:hover,
+.award-mini:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -16px rgba(22, 51, 44, 0.28);
+}
+
+/* --- Sticky header gains a shadow once the page scrolls --------------- */
+.site-header {
+  transition: box-shadow 0.25s ease;
+}
+.site-header.is-stuck {
+  box-shadow: 0 6px 20px -12px rgba(22, 51, 44, 0.4);
+}
+
+/* Everything above is decorative. Off entirely on request. */
+@media (prefers-reduced-motion: reduce) {
+  .js-anim :is(
+    .sec-head, .services-head, .tst-head, .tst-sub, .story-head, .section-label,
+    .reveal-card, .helps-card, .helps-note, .quote-banner blockquote,
+    .about-photo, .awards-mini, .identity, .meet-body,
+    .story-card, .story-cta,
+    .service-card, .services-cta,
+    .tabs, .tcard, .vcard, .tst-cta,
+    .contact-pitch, .info-card, .consult-form, .contact-form-heading, .location
+  ) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .js-anim .hero-inner > *,
+  .js-anim .badge-outer {
+    animation: none !important;
+  }
+  .service-card:hover,
+  .tcard:hover,
+  .info-card:hover,
+  .story-card:hover,
+  .reveal-card:hover,
+  .helps-card:hover,
+  .award-mini:hover {
+    transform: none;
+  }
+}

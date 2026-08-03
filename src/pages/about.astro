@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WhatsAppCTA from '../components/WhatsAppCTA.astro';
 import { CONTACT, GOOGLE_RATING } from '../consts';
 ---
 
@@ -176,11 +175,6 @@ import { CONTACT, GOOGLE_RATING } from '../consts';
           </ul>
         </article>
       </div>
-
-      <div class="story-cta">
-        <p class="story-cta-text">Ready to know more about yourself?</p>
-        <WhatsAppCTA label="Chat on WhatsApp" variant="whatsapp" large />
-      </div>
     </div>
   </section>
 </BaseLayout>
@@ -291,13 +285,6 @@ import { CONTACT, GOOGLE_RATING } from '../consts';
        second margin on .meet-body, which was doubling up the space after
        the rating line. */
     margin-bottom: 24px;
-  }
-  .eyebrow-script {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.1;
-    color: var(--coral);
   }
   .about-copy h1 {
     font-size: 38px;

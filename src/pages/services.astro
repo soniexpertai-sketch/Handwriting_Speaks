@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ServiceCard from '../components/ServiceCard.astro';
-import WhatsAppCTA from '../components/WhatsAppCTA.astro';
 import { SERVICES } from '../consts';
 ---
 
@@ -23,14 +22,6 @@ import { SERVICES } from '../consts';
           ))
         }
       </div>
-
-      <div class="services-cta">
-        <p class="services-cta-text">
-          Get a customised consultation to empower your confidence, behaviour and
-          performance.
-        </p>
-        <WhatsAppCTA label="Chat with our team" variant="whatsapp" large />
-      </div>
     </div>
   </section>
 </BaseLayout>
@@ -50,7 +41,7 @@ import { SERVICES } from '../consts';
     font-family: var(--font-display);
     font-size: clamp(42px, 6vw, 56px);
     font-weight: 700;
-    color: var(--green);
+    color: var(--coral);
     margin: 0;
   }
 

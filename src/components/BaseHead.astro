@@ -15,6 +15,10 @@ const {
   title,
   description = SITE.description,
   path = '/',
+  // 1200x630 landscape share card — the size WhatsApp, Facebook and
+  // LinkedIn crop to. This file was previously referenced but never
+  // created, so every page advertised a preview image that 404'd.
+  // Regenerate with `node scripts/make-og.mjs` after any brand change.
   image = '/og-default.jpg',
 } = Astro.props;
 
@@ -27,6 +31,22 @@ const fullTitle = path === '/' ? `${SITE.name} — ${SITE.tagline}` : `${title} 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
+
+<!-- Set before first paint so animated blocks start hidden rather than
+     appearing and then being hidden a frame later. Inline and in <head>
+     is the only place that guarantees it. -->
+<script is:inline>
+  (function () {
+    var d = document.documentElement;
+    d.classList.add('js-anim');
+    // Failsafe: the hidden state is only safe while something is coming to
+    // reveal it. If the reveal script never runs — bundle blocked, JS error
+    // — drop the class so content can never be stranded invisible.
+    setTimeout(function () {
+      if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js-anim');
+    }, 2500);
+  })();
+</script>
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />

@@ -39,6 +39,102 @@ const { title, description, path, image } = Astro.props;
   </body>
 </html>
 
+<script>
+  // Site-wide motion. Runs on every page via this layout, so pages only
+  // describe their content — no per-page animation wiring to keep in sync.
+  //
+  // The hidden state is applied by CSS (global.css) under the `.js-anim`
+  // class that BaseHead sets inline. This script's job is only to decide
+  // *when* each block becomes visible, then mark the document ready so the
+  // head script's failsafe stands down.
+  const REVEAL = [
+    '.sec-head', '.services-head', '.tst-head', '.tst-sub', '.story-head',
+    '.section-label', '.reveal-card', '.helps-card', '.helps-note',
+    '.quote-banner blockquote', '.about-photo', '.awards-mini', '.identity',
+    '.meet-body', '.story-card', '.story-cta', '.service-card',
+    '.services-cta', '.tabs', '.tcard', '.vcard', '.tst-cta',
+    '.contact-pitch', '.info-card', '.consult-form', '.contact-form-heading',
+    '.location',
+  ].join(',');
+
+  const root = document.documentElement;
+  const targets = Array.from(document.querySelectorAll<HTMLElement>(REVEAL));
+
+  // Stagger siblings: each element's index within its own parent drives the
+  // CSS transition-delay, so a row of cards arrives in sequence. Capped so a
+  // long list never ends with a visibly late final item.
+  const seen = new Map<Element, number>();
+  targets.forEach((el) => {
+    const parent = el.parentElement;
+    if (!parent) return;
+    const n = seen.get(parent) ?? 0;
+    seen.set(parent, n + 1);
+    el.style.setProperty('--i', String(Math.min(n, 6)));
+  });
+
+  const show = (el: Element) => el.classList.add('is-in');
+
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(show);
+  } else {
+    // Anything already on screen reveals immediately — waiting on an
+    // intersection callback would leave above-the-fold content blank.
+    const vh = window.innerHeight;
+    targets.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh && r.bottom > 0) show(el);
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            show(entry.target);
+            io.unobserve(entry.target); // one-shot; never re-hides
+          }
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+    );
+    targets.forEach((el) => {
+      if (!el.classList.contains('is-in')) io.observe(el);
+    });
+  }
+
+  // Testimonial cards outside the active tab are `hidden`, i.e. display:none,
+  // so an IntersectionObserver never fires for them. Without this they would
+  // un-hide still carrying opacity:0 and the tab would look empty (confirmed
+  // bug: switching to Graphotherapy showed three invisible cards). Reveal any
+  // reveal-target the moment something un-hides it.
+  const unhideObserver = new MutationObserver((records) => {
+    records.forEach((rec) => {
+      const el = rec.target;
+      if (
+        el instanceof HTMLElement &&
+        !el.hasAttribute('hidden') &&
+        el.matches(REVEAL)
+      ) {
+        show(el);
+      }
+    });
+  });
+  unhideObserver.observe(document.body, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['hidden'],
+  });
+
+  root.setAttribute('data-reveal-ready', '');
+
+  // Sticky header picks up a shadow once the page leaves the top.
+  const header = document.querySelector('.site-header');
+  if (header) {
+    const sync = () => header.classList.toggle('is-stuck', window.scrollY > 8);
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+  }
+</script>
+
 <style>
   /* Sticky footer via flex column + min-height only — NOT `height: 100%`.
      A fixed `height` on html/body (rather than `min-height`) locks their box

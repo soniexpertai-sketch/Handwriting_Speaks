@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
 import TestimonialVideoCard from '../components/TestimonialVideoCard.astro';
-import WhatsAppCTA from '../components/WhatsAppCTA.astro';
 import { SITE, CONTACT } from '../consts';
 import {
   TESTIMONIALS,
@@ -143,16 +142,6 @@ const defaultWaMessage = SERVICE_FILTERS[0].waMessage;
         }
       </div>
 
-      <!-- CTA (message updates to match the active tab) -->
-      <div class="tst-cta">
-        <p class="tst-cta-text">Ready to know more about yourself?</p>
-        <WhatsAppCTA
-          label="Chat on WhatsApp"
-          message={defaultWaMessage}
-          variant="whatsapp"
-          large
-        />
-      </div>
     </div>
   </section>
 
@@ -170,13 +159,6 @@ const defaultWaMessage = SERVICE_FILTERS[0].waMessage;
     text-align: center;
     max-width: 680px;
     margin: 0 auto 40px;
-  }
-  .eyebrow-script {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--coral);
-    margin-bottom: 2px;
   }
   .tst-head h1 {
     font-family: var(--font-display);
@@ -316,7 +298,6 @@ const defaultWaMessage = SERVICE_FILTERS[0].waMessage;
   const vcards = Array.from(
     document.querySelectorAll<HTMLElement>('.vcard')
   );
-  const ctaLink = document.querySelector<HTMLAnchorElement>('.tst-cta .wa-cta');
   const waBase = 'https://wa.me/918380092621?text=';
 
   // Apply the initially-selected tab's filter on load (sets columns + CTA).
@@ -359,9 +340,6 @@ const defaultWaMessage = SERVICE_FILTERS[0].waMessage;
     if (vsection) vsection.hidden = visibleVideos === 0;
 
     // Keep the CTA's prefilled message in step with what's being viewed.
-    if (ctaLink && waMessage) {
-      ctaLink.href = waBase + encodeURIComponent(waMessage);
-    }
   }
 
   function selectTab(tab: HTMLButtonElement, setFocus = true) {
